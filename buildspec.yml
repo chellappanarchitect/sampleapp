@@ -8,16 +8,29 @@ phases:
       - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 905418214303.dkr.ecr.ap-south-1.amazonaws.com
       # replace with this to your repository
       - REPOSITPRY_URI=905418214303.dkr.ecr.ap-south-1.amazonaws.com/sampleapp-0.0.1-snapshot.jar
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
   build:
     commands:
       - echo build started...
       - echo building jar file
       - mvn clean install
       - echo building the docker image
-      - docker build -t sampleapp-0.0.1-snapshot.jar .
-      - docker tag sampleapp-0.0.1-snapshot.jar:latest 905418214303.dkr.ecr.ap-south-1.amazonaws.com/sampleapp-0.0.1-snapshot.jar:latest
+      - docker build -t $REPOSITPRY_URI:latest .
+      - docker tag $REPOSITPRY_URI:latest $REPOSITPRY_URI:$IMAGE_TAG
   post_build:
     commands:
       - echo build completed on...
       - echo pushing to repo
-      - docker push 905418214303.dkr.ecr.ap-south-1.amazonaws.com/sampleapp-0.0.1-snapshot.jar:latest
+      - docker push $REPOSITPRY_URI:latest
+      - docker push $REPOSITPRY_URI:$IMAGE_TAG
+      - echo writing image definition file
+      # give your container name
+      - DOCKER_CONTAINER_NAME=sampapp-ecr-container
+      - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITPRY_URI:$IMAGE_TAG > imagedefinition.json
+      - echo $DOCKER_CONTAINER_NAME
+      - echo printing imagedefinition.json
+      - cat imagedefinition.json
+artifacts:
+  files:
+    - imagedefinition.json
+    - taget/sampleapp-0.0.1-snapshot.jar
