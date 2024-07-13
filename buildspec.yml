@@ -9,14 +9,14 @@ phases:
       # replace with this to your repository
       - REPOSITPRY_URI=905418214303.dkr.ecr.ap-south-1.amazonaws.com/sampleapp-0.0.1-snapshot.jar
   build:
-    - echo build started on 'date'
+    - echo build started...
     - echo building jar file
     - mvn clean install
     - echo building the docker image
     - docker build -t sampleapp-0.0.1-snapshot.jar .
     - docker tag sampleapp-0.0.1-snapshot.jar:latest 905418214303.dkr.ecr.ap-south-1.amazonaws.com/sampleapp-0.0.1-snapshot.jar:latest
   post_build:
-    - echo build completed on 'date'
+    - echo build completed on...
     - echo pushing to repo
     - docker push 905418214303.dkr.ecr.ap-south-1.amazonaws.com/sampleapp-0.0.1-snapshot.jar:latest
 artifacts:
