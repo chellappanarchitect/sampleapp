@@ -1,0 +1,25 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo logging into Amazon ECR....
+      - aws --version
+      # proivide login command
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 905418214303.dkr.ecr.ap-south-1.amazonaws.com
+      # replace with this to your repository
+      - REPOSITPRY_URI=905418214303.dkr.ecr.ap-south-1.amazonaws.com/sampleapp-0.0.1-snapshot.jar
+  build:
+    - echo build started on 'date'
+    - echo building jar file
+    - mvn clean install
+    - echo building the docker image
+    - docker build -t sampleapp-0.0.1-snapshot.jar .
+    - docker tag sampleapp-0.0.1-snapshot.jar:latest 905418214303.dkr.ecr.ap-south-1.amazonaws.com/sampleapp-0.0.1-snapshot.jar:latest
+  post_build:
+    - echo build completed on 'date'
+    - echo pushing to repo
+    - docker push 905418214303.dkr.ecr.ap-south-1.amazonaws.com/sampleapp-0.0.1-snapshot.jar:latest
+artifacts:
+  files:
+    - target/sampleapp.0.0.1-snapshot.jar
+  
