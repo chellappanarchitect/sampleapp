@@ -25,7 +25,7 @@ phases:
       - docker push $REPOSITPRY_URI:$IMAGE_TAG
       - echo writing image definition file
       # give your container name
-      - DOCKER_CONTAINER_NAME=sampapp-ecr-container
+      - DOCKER_CONTAINER_NAME=test-task-def
       - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITPRY_URI:$IMAGE_TAG > imagedefinitions.json
       - echo $DOCKER_CONTAINER_NAME
       - echo printing imagedefinitions.json
