@@ -21,7 +21,3 @@ phases:
       - echo build completed on...
       - echo pushing to repo
       - docker push 905418214303.dkr.ecr.ap-south-1.amazonaws.com/sampleapp-0.0.1-snapshot.jar:latest
-artifacts:
-  files:
-    - target/sampleapp.0.0.1-snapshot.jar
-  
